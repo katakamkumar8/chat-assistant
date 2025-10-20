@@ -1,0 +1,84 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background-color: #343541;
+  color: #ffffff;
+  overflow: hidden;
+  height: 100vh;
+}
+
+#root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* CSS Variables for theming */
+:root {
+  --bg-primary: #343541;
+  --bg-secondary: #444654;
+  --bg-input: #40414f;
+  --bg-accent: #10a37f;
+  --text-primary: #ffffff;
+  --text-secondary: #c5c5d2;
+  --text-muted: #8e8ea0;
+  --border-color: #565869;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --user-bubble: #444654;
+  --bot-bubble: #444654;
+  --input-border: #565869;
+  --bg-hover: #4a4b5c;
+}
+
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f7f8;
+  --bg-input: #ffffff;
+  --bg-accent: #10a37f;
+  --text-primary: #000000;
+  --text-secondary: #374151;
+  --text-muted: #6b7280;
+  --border-color: #e5e7eb;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --user-bubble: #f0f0f0;
+  --bot-bubble: #f0f0f0;
+  --input-border: #d1d5db;
+  --bg-hover: #e5e7eb;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 13px;
+  }
+}
