@@ -10,8 +10,9 @@ dotenv.config({ path: './env.local' });
 // Set portfinder base port
 portfinder.basePort = parseInt(process.env.PORT) || 3000;
 
-module.exports = async () => {
+module.exports = async (env, argv) => {
   const port = await portfinder.getPortPromise();
+  const isProduction = argv.mode === 'production';
   
   return {
     entry: './src/index.js',
@@ -19,7 +20,7 @@ module.exports = async () => {
       path: path.resolve(__dirname, 'dist'),
       filename: 'bundle.js',
       clean: true,
-      publicPath: process.env.NODE_ENV === 'production' ? '/MCHAT/' : '/',
+      publicPath: isProduction ? '/chat-assistant/' : '/',
     },
     module: {
       rules: [

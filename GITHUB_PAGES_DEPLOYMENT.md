@@ -41,7 +41,7 @@ The deployment is now automated! Here's what happens:
   1. GitHub Actions installs dependencies
   2. Builds the production version
   3. Deploys to GitHub Pages
-- **URL**: Your app will be available at `https://[your-username].github.io/MCHAT/`
+- **URL**: Your app will be available at `https://[your-username].github.io/chat-assistant/`
 
 ### 4. Manual Deployment (if needed)
 
@@ -104,10 +104,10 @@ Visit `http://localhost:3000` to test your production build.
 
 ## Repository Name Considerations
 
-The current configuration assumes your repository is named `MCHAT`. If your repository has a different name:
+The current configuration assumes your repository is named `chat-assistant`. If your repository has a different name:
 
 1. Update the `publicPath` in `webpack.config.js`
-2. Change `/MCHAT/` to `/[your-repo-name]/`
+2. Change `/chat-assistant/` to `/[your-repo-name]/`
 
 ## Support
 
