@@ -4,11 +4,16 @@ const webpack = require('webpack');
 const dotenv = require('dotenv');
 const portfinder = require('portfinder');
 
-// Load environment variables
-dotenv.config({ path: './env.local' });
+// Load environment variables (fallback to .env.local if exists, but use process.env if set)
+// This allows GitHub Actions to inject env vars directly
+// process.env takes precedence over file-based config
+const envFile = dotenv.config({ path: './env.local' });
+const fileEnv = envFile.parsed || {};
+// Get API key from process.env first (for CI/CD), then fallback to file
+const apiKey = process.env.REACT_APP_GROQ_API_KEY || fileEnv.REACT_APP_GROQ_API_KEY || '';
 
 // Set portfinder base port
-portfinder.basePort = parseInt(process.env.PORT) || 3000;
+portfinder.basePort = parseInt(process.env.PORT || fileEnv.PORT) || 3000;
 
 module.exports = async (env, argv) => {
   const port = await portfinder.getPortPromise();
@@ -46,7 +51,8 @@ module.exports = async (env, argv) => {
         title: 'Mchat Interface',
       }),
       new webpack.DefinePlugin({
-        'process.env': JSON.stringify(process.env)
+        'process.env.REACT_APP_GROQ_API_KEY': JSON.stringify(apiKey),
+        'process.env.NODE_ENV': JSON.stringify(argv.mode === 'production' ? 'production' : 'development'),
       }),
     ],
     devServer: {
