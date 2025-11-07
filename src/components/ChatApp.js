@@ -62,10 +62,30 @@ const ChatApp = () => {
       }
     } catch (error) {
       console.error('Error sending message:', error);
+      
+      // Provide more specific error messages
+      let errorContent = 'Sorry, I encountered an error. Please try again.';
+      
+      if (error.message) {
+        const errorMsg = error.message.toLowerCase();
+        
+        if (errorMsg.includes('api key') || errorMsg.includes('authorization') || errorMsg.includes('401') || errorMsg.includes('403')) {
+          errorContent = '⚠️ API key error: Please check your REACT_APP_GROQ_API_KEY in env.local.';
+        } else if (errorMsg.includes('network') || errorMsg.includes('fetch') || errorMsg.includes('failed to fetch')) {
+          errorContent = '⚠️ Network error: Please check your internet connection and try again.';
+        } else if (errorMsg.includes('rate limit') || errorMsg.includes('429')) {
+          errorContent = '⚠️ Rate limit exceeded: Please wait a moment and try again.';
+        } else if (errorMsg.includes('all models failed')) {
+          errorContent = '⚠️ Service temporarily unavailable: All AI models failed. Please try again in a moment.';
+        } else {
+          errorContent = `⚠️ Error: ${error.message}`;
+        }
+      }
+      
       const errorMessage = {
         id: Date.now() + 1,
         type: 'bot',
-        content: 'Sorry, I encountered an error. Please try again.',
+        content: errorContent,
         timestamp: new Date(),
         isError: true
       };

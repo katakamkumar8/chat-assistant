@@ -83,6 +83,11 @@ class AIService {
    */
   async sendMessage(userId, message) {
     try {
+      // Check API key first
+      if (!this.apiKey || this.apiKey.trim().length === 0) {
+        throw new Error('API key is not set. Please configure REACT_APP_GROQ_API_KEY in your environment variables.');
+      }
+
       // Validate input
       if (!message || message.trim().length === 0) {
         throw new Error('Message cannot be empty');
@@ -131,10 +136,23 @@ class AIService {
           });
 
           if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            let errorMessage = `HTTP error! status: ${response.status}`;
+            if (response.status === 401 || response.status === 403) {
+              errorMessage = 'Invalid or missing API key. Please check your REACT_APP_GROQ_API_KEY.';
+            } else if (response.status === 429) {
+              errorMessage = 'Rate limit exceeded. Please wait a moment and try again.';
+            } else if (response.status >= 500) {
+              errorMessage = 'Server error. Please try again later.';
+            }
+            throw new Error(errorMessage);
           }
 
           const data = await response.json();
+          
+          // Check for API-level errors in response
+          if (data.error) {
+            throw new Error(data.error.message || `API error: ${JSON.stringify(data.error)}`);
+          }
           
           if (data.choices && data.choices[0] && data.choices[0].message) {
             const assistantMessage = data.choices[0].message.content;
@@ -157,7 +175,8 @@ class AIService {
         }
       }
 
-      throw new Error('All models failed. Please check your API key and try again.');
+      // If all models failed, throw a detailed error
+      throw new Error('All AI models failed. This could be due to API key issues, network problems, or service unavailability. Please check your configuration and try again.');
 
     } catch (error) {
       console.error('AI Service error:', error);
