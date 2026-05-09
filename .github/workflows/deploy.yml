@@ -17,7 +17,11 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+    # So secrets stored on the "github-pages" environment are visible during webpack build
+    environment: github-pages
+    env:
+      REACT_APP_GROQ_API_KEY: ${{ secrets.REACT_APP_GROQ_API_KEY }}
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -30,10 +34,15 @@ jobs:
         
     - name: Install dependencies
       run: npm ci
+
+    - name: Ensure API key is set for client bundle
+      run: |
+        if [ -z "${REACT_APP_GROQ_API_KEY:-}" ]; then
+          echo "::error::REACT_APP_GROQ_API_KEY is empty. Add a repository Actions secret with that exact name, or add it to the github-pages environment (this workflow uses that environment for the build)."
+          exit 1
+        fi
       
     - name: Build
-      env:
-        REACT_APP_GROQ_API_KEY: ${{ secrets.REACT_APP_GROQ_API_KEY }}
       run: npm run build
       
     - name: Setup Pages

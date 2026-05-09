@@ -9,7 +9,9 @@ const envLocal = dotenv.config({ path: './env.local' }).parsed || {};
 const dotEnvLocal = dotenv.config({ path: './.env.local' }).parsed || {};
 const fileEnv = { ...dotEnvLocal, ...envLocal };
 // Get API key from process.env first (for CI/CD), then fallback to file
-const apiKey = process.env.REACT_APP_GROQ_API_KEY || fileEnv.REACT_APP_GROQ_API_KEY || '';
+const apiKey = String(
+  process.env.REACT_APP_GROQ_API_KEY || fileEnv.REACT_APP_GROQ_API_KEY || ''
+).trim();
 
 // Set portfinder base port
 portfinder.basePort = parseInt(process.env.PORT || fileEnv.PORT) || 3000;
