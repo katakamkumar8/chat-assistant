@@ -4,11 +4,10 @@ const webpack = require('webpack');
 const dotenv = require('dotenv');
 const portfinder = require('portfinder');
 
-// Load environment variables (fallback to .env.local if exists, but use process.env if set)
-// This allows GitHub Actions to inject env vars directly
-// process.env takes precedence over file-based config
-const envFile = dotenv.config({ path: './env.local' });
-const fileEnv = envFile.parsed || {};
+// Load environment variables from env.local and/or .env.local; process.env wins (CI/CD).
+const envLocal = dotenv.config({ path: './env.local' }).parsed || {};
+const dotEnvLocal = dotenv.config({ path: './.env.local' }).parsed || {};
+const fileEnv = { ...dotEnvLocal, ...envLocal };
 // Get API key from process.env first (for CI/CD), then fallback to file
 const apiKey = process.env.REACT_APP_GROQ_API_KEY || fileEnv.REACT_APP_GROQ_API_KEY || '';
 
