@@ -5,16 +5,22 @@ If you're getting "Sorry, I encountered an error. Please try again." on GitHub P
 
 ## Solution
 
-### Step 1: Add GitHub Secret
+### Step 1: Add GitHub Secret (repository level)
 
 1. Go to your GitHub repository: `https://github.com/katakamkumar8/chat-assistant`
 2. Click on **Settings** tab
 3. In the left sidebar, click **Secrets and variables** → **Actions**
-4. Click **New repository secret**
+4. Click **New repository secret** (not Environment secrets)
 5. Add:
-   - **Name**: `REACT_APP_GROQ_API_KEY`
-   - **Value**: Your Groq API key (get it from https://console.groq.com/)
+   - **Name**: `REACT_APP_GROQ_API_KEY` (exact spelling, case-sensitive)
+   - **Value**: Your Groq API key from https://console.groq.com/ (must start with `gsk_`)
 6. Click **Add secret**
+
+Or with GitHub CLI (replace with your real key):
+
+```bash
+gh secret set REACT_APP_GROQ_API_KEY --repo katakamkumar8/chat-assistant
+```
 
 ### Step 2: Verify Workflow File
 

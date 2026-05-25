@@ -70,7 +70,10 @@ const ChatApp = () => {
         const errorMsg = error.message.toLowerCase();
         
         if (errorMsg.includes('api key') || errorMsg.includes('authorization') || errorMsg.includes('401') || errorMsg.includes('403')) {
-          errorContent = '⚠️ API key error: Please check your REACT_APP_GROQ_API_KEY in env.local.';
+          const isProd = process.env.NODE_ENV === 'production';
+          errorContent = isProd
+            ? '⚠️ API key error: Add or update the REACT_APP_GROQ_API_KEY secret in GitHub (Settings → Secrets and variables → Actions), then re-run the Deploy workflow.'
+            : '⚠️ API key error: Copy env.example to env.local and set a valid REACT_APP_GROQ_API_KEY from https://console.groq.com/';
         } else if (errorMsg.includes('network') || errorMsg.includes('fetch') || errorMsg.includes('failed to fetch')) {
           errorContent = '⚠️ Network error: Please check your internet connection and try again.';
         } else if (errorMsg.includes('rate limit') || errorMsg.includes('429')) {

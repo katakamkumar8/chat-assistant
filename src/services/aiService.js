@@ -236,8 +236,8 @@ Behavior Instructions:
 
 class AIService {
   constructor() {
-    this.apiKey = process.env.REACT_APP_GROQ_API_KEY;
-    
+    this.apiKey = (process.env.REACT_APP_GROQ_API_KEY || '').trim();
+
     if (!this.apiKey) {
       console.error('REACT_APP_GROQ_API_KEY environment variable is not set');
     }
@@ -329,8 +329,16 @@ class AIService {
 
           if (!response.ok) {
             let errorMessage = `HTTP error! status: ${response.status}`;
+            try {
+              const errBody = await response.clone().json();
+              if (errBody?.error?.code === 'invalid_api_key') {
+                errorMessage = 'Invalid API key. For GitHub Pages, update the REACT_APP_GROQ_API_KEY repository secret and redeploy. For local dev, set it in env.local.';
+              }
+            } catch (_) { /* ignore non-JSON error bodies */ }
             if (response.status === 401 || response.status === 403) {
-              errorMessage = 'Invalid or missing API key. Please check your REACT_APP_GROQ_API_KEY.';
+              errorMessage = errorMessage.includes('Invalid API key')
+                ? errorMessage
+                : 'Invalid or missing API key. Please check your REACT_APP_GROQ_API_KEY.';
             } else if (response.status === 429) {
               errorMessage = 'Rate limit exceeded. Please wait a moment and try again.';
             } else if (response.status >= 500) {
